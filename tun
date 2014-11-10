@@ -1,0 +1,215 @@
+package test;
+import java.awt.Color;
+import java.awt.EventQueue;
+
+import javax.swing.JFrame;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JScrollPane;
+import javax.swing.JEditorPane;
+
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import java.io.IOException;
+
+import javax.swing.JTextArea;
+
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.List;
+import java.util.Map;
+
+class RunnableDemo implements Runnable {
+	   private Thread t;
+	   private String threadName;
+	   private JEditorPane editorPane;
+	   private JTextArea textArea;
+	   private JTextArea textArea_1;
+	   private String nthread;
+	   RunnableDemo( String url,JEditorPane editorPane1,JTextArea textArea1,JTextArea textArea2,String nthread1){
+		   threadName = url;
+		   nthread=nthread1;
+		   if(threadName.length()>0)if(! threadName.contains("://")) threadName= "http://" + threadName;
+	       editorPane=editorPane1;
+	       textArea=textArea1;
+	       textArea_1=textArea2;
+	       textArea.setText("  thread status \n======================================\n");
+	       textArea_1.setText("  headder  \n======================================\n");
+	       textArea.append ( nthread+" Creating thread : " +  threadName +"\n");
+	       
+	   }
+	   public void run() {
+		    
+		    
+			 try {
+				 	
+				 	textArea_1.append("thread : "+threadName +"\n");
+				 	textArea.append( nthread+" Running thread : " +  threadName  +"\n");
+				    URL obj = new URL(threadName);
+				    URLConnection conn = obj.openConnection();
+				    Map<String, List<String>> map = conn.getHeaderFields();
+
+				    textArea_1.append("Printing All Response Header for URL: "
+				            + obj.toString() + "\n");
+
+				    for (Map.Entry<String, List<String>> entry : map.entrySet()) {
+				    	textArea_1.append(entry.getKey() + " : " + entry.getValue()+"\n");
+				    }
+
+				    textArea_1.append("\nGet Response Header By Key ...\n");
+				    textArea_1.append("\n=================================================\n");
+				    List<String> contentLength = map.get("Content-Length");
+
+				    if (contentLength == null) {
+				    	textArea_1.append("'Content-Length' doesn't present in Header!");
+				    } else {
+				        for (String header : contentLength) {
+				        	textArea_1.append("Content-Lenght: " + header);
+				        }
+				    }
+
+				 
+				 
+				 
+				 
+				 editorPane.setPage(threadName);
+			 }
+			 catch (IOException e) {
+				 editorPane.setContentType("text/html");
+			   	 editorPane.setText("<html> thread "+threadName+"Could not load  </html>");
+			 }
+			 catch (Exception e) {
+				    e.printStackTrace();
+				}
+			 textArea.append( nthread+"  Thread : " +  threadName + " exiting. \n");
+			 
+	    
+	   }
+	   
+	   public void start ()
+	   {  textArea.append( nthread+"  Starting thread : " +  threadName  +"\n" );
+	      if (t == null)
+	      {
+	         t = new Thread (this, threadName);
+	         t.start ();
+	      }
+	      
+	   }
+	}
+public class tun {
+
+	private JFrame frame;
+	private JTextField textField;
+	private JEditorPane editorPane;
+	private JEditorPane editorPane_1;
+	private JTextField textField_1;
+	private JTextArea textArea;
+	private JTextArea textArea_1;
+
+
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					tun window = new tun();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public tun() {
+		initialize();
+	}
+
+	/**
+	 * Initialize the contents of the frame.
+	 */
+	private void initialize() {
+		frame = new JFrame();
+		frame.setResizable(false);
+		frame.setTitle("thanyatap saebae s5050330@kmitl.ac.th - Java Web Browser (Network Programming Class Assignment)");
+		frame.setBounds(100, 100, 800, 600);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		
+		textField = new JTextField();
+		textField.setBounds(30, 3, 370, 20);
+		frame.getContentPane().add(textField);
+		textField.setColumns(10);
+		
+		JButton btnNewButton = new JButton("next");
+		btnNewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				  if(!textField.getText().equals("")){
+				RunnableDemo R1 = new RunnableDemo(textField.getText(),editorPane,textArea,textArea_1,"{ thread a } ");
+			      R1.start();
+				  }
+				  if(!textField_1.getText().equals("")){
+			      RunnableDemo R2 = new RunnableDemo(textField_1.getText(),editorPane_1,textArea,textArea_1,"{ thread b } ");
+			      R2.start();
+				  }
+			}
+		});
+		btnNewButton.setBounds(731, 2, 63, 23);
+		frame.getContentPane().add(btnNewButton);
+		
+		JLabel lblNewLabel = new JLabel("url:");
+		lblNewLabel.setBounds(10, 3, 46, 14);
+		frame.getContentPane().add(lblNewLabel);
+		
+		editorPane = new JEditorPane();
+		editorPane.setEditable(false);
+		editorPane.setBounds(1, 28, 400, 300);
+		frame.getContentPane().add(editorPane);
+		
+		JScrollPane scrollPane = new JScrollPane(editorPane);
+		scrollPane.setBounds(0, 28, 400, 300);
+		frame.getContentPane().add(scrollPane);
+
+		textField_1 = new JTextField();
+		textField_1.setBounds(431, 3, 298, 20);
+		frame.getContentPane().add(textField_1);
+		textField_1.setColumns(10);
+		
+		JLabel lblUrl = new JLabel("url2:");
+		lblUrl.setBounds(406, 6, 46, 14);
+		frame.getContentPane().add(lblUrl);
+		
+
+		editorPane_1= new JEditorPane();
+		editorPane_1.setEditable(false);
+		editorPane_1.setBounds(406, 29, 400, 300);
+		frame.getContentPane().add(editorPane_1);
+		
+		JScrollPane scrollPane_1 = new JScrollPane(editorPane_1);
+		scrollPane_1.setBounds(406, 29, 400, 300);
+		frame.getContentPane().add(scrollPane_1);
+		
+		textArea = new JTextArea("    thread status ");
+		textArea.setForeground(Color.blue);
+		JScrollPane scrollPane_2 = new JScrollPane(textArea);
+		scrollPane_2.setBounds(0, 334, 794, 109);
+		frame.getContentPane().add(scrollPane_2);
+		
+		
+		textArea_1 = new JTextArea("    headder 2 \n");
+		textArea_1.setForeground(Color.green);
+		JScrollPane scrollPane_3 = new JScrollPane(textArea_1);
+		scrollPane_3.setBounds(0, 444, 794, 119);
+		frame.getContentPane().add(scrollPane_3);
+		
+		
+		
+		
+	}
+}
