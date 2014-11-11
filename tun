@@ -154,9 +154,17 @@ public class tun {
 				RunnableDemo R1 = new RunnableDemo(textField.getText(),editorPane,textArea,textArea_1,"{ thread a } ");
 			      R1.start();
 				  }
+				  else{
+					  editorPane.setContentType("text/html");
+					  editorPane.setText("<html> : "+textField.getText()+"Could not load  </html>");
+				  }
 				  if(!textField_1.getText().equals("")){
 			      RunnableDemo R2 = new RunnableDemo(textField_1.getText(),editorPane_1,textArea,textArea_1,"{ thread b } ");
 			      R2.start();
+				  }
+				  else{
+					  editorPane_1.setContentType("text/html");
+					  editorPane_1.setText("<html> : "+textField_1.getText()+"Could not load  </html>");
 				  }
 			}
 		});
